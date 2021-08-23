@@ -10,7 +10,7 @@ import linecache
 pd.options.mode.chained_assignment = None   
 
 #Define the file (dataset) pathway, "file"
-file = (r"S:\ABQ\Rio_Lisbon_SupplmentalSiteCharacterization\Engineering\FY20-NaturalRecharge-WaterBalance\Models\HELP\Output_Files\Enchanced Tailings\UTB-TP-1\EZD8CN77.txt")
+file = (r"test_data/EZD8CN77.txt")
 
 #Get line numbers where l1 exists within the .txt document
 lineNums = []
