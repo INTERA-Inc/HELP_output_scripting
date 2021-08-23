@@ -6,32 +6,34 @@ import pandas as pd
 import numpy as np
 import linecache
 
+#filter out the pandas caveat warnings
+pd.options.mode.chained_assignment = None   
+
+#Define the file (dataset) pathway, "file"
 file = (r"S:\ABQ\Rio_Lisbon_SupplmentalSiteCharacterization\Engineering\FY20-NaturalRecharge-WaterBalance\Models\HELP\Output_Files\Enchanced Tailings\UTB-TP-1\EZD8CN77.txt")
 
-
+#Get line numbers where l1 exists within the .txt document
 lineNums = []
 lines = []
 l1 = "ANNUAL TOTALS FOR YEAR"
 with open(file) as myfile:
     for num, line in enumerate(myfile, 1):
         if l1 in line:
-            print("Year #", num, line)
             lineNums.append(num)
             lines.append(line[51:54])  
 
+#Create pd.DataFrame with the above line numbers            
 lookups_df = pd.DataFrame(lineNums)
 lookups_df['Year'] = lines
 lookups_df['Year'] = pd.to_numeric(lookups_df['Year'])
 lookups_df.columns = ['LineNumber', 'Year']
 
-
+#defining where the variables occur within each Year Summary block in the .txt file
 df_ = lookups_df
 df_['precip_line'] = df_.LineNumber + 4
 df_['runoff_line'] = df_.LineNumber + 6
 df_['evapotrans_line'] = df_.LineNumber + 8
 df_['leakage_line'] = df_.LineNumber + 10
-
-
 df = df_
 
 #precip_vals
@@ -87,7 +89,6 @@ leakage_df.columns = ['Leakage_vals']
 leakage_vals = pd.Series(leakage_df.Leakage_vals).rename("Leakage_vals_in/yr")
 df_["Leakage_vals"] = leakage_vals
 
-
 #preFinal dataframe subset
 df_preFinal = df_[['Year',
                   'precip_values',
@@ -102,8 +103,6 @@ df_sums['Cumulative_ET'] = df_sums['Evapotrans_values'].cumsum()
 df_sums['Cumulative_Leakage'] = df_sums['Leakage_vals'].cumsum()
 
 #Export dataframe as .xlsx
-#outputfile_name = input("Enter output file name and extension, include .xlsx")
-
 df_sums.to_excel("Help_Output_Dataset0.xlsx", index=False)
-
+print("...")
 print("Script complete. Review output .xlsx file")
